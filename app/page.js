@@ -253,9 +253,10 @@ const MainScreen = () => {
           </div>
           )}
           {categories &&
-            categories.map((category) =>
+            categories.map((category, index) =>
               category.Name === selectedCategory ? (
                 <div
+                  key={index}
                   className="bg-black p-4 shadow-md rounded-md border border-gray-900 bg-orange-500 cursor-pointer"
                   onClick={() => onCategoryChange(category.Name)}
                 >

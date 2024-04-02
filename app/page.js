@@ -5,7 +5,7 @@ import Footer from "./components/footer";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const mainScreen = () => {
+const MainScreen = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -400,4 +400,4 @@ const mainScreen = () => {
   );
 };
 
-export default mainScreen;
+export default MainScreen;

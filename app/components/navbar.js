@@ -41,6 +41,10 @@ const Navbar = () => {
           <a href="/current-orders" className="text-white">
             Active Orders
           </a>
+          <a href="/cancelled-orders" className="text-white">
+            Cancelled Orders
+          </a>
+          
         </div>
 
         <div className="flex items-center">

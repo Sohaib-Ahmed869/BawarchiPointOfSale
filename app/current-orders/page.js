@@ -47,12 +47,26 @@ const CurrentOrders = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-bold mb-4">Active Orders</h2>
+        {
+          //if orders which are not completed, cancelled or delivered are empty
+          orders.filter(
+            (order) =>
+              order.Status !== "Completed" &&
+              order.Status !== "Cancelled" &&
+              order.Status !== "Delivered"
+          ).length === 0 && (
+            <div className="bg-black bg-opacity-50 p-4 rounded-md shadow-md border border-gray-700">
+              <h3 className="text-xl font-semibold">No Active Orders</h3>
+            </div>
+          )
+        }
         <div className="flex flex-col gap-4">
           {orders &&
             orders.map((order) =>
               order.Status !== "Completed" &&
               order.Status !== "Cancelled" &&
               order.Status !== "Delivered" ? (
+                
                 <div
                   key={order._id}
                   className="bg-black bg-opacity-50 p-4 rounded-md shadow-md border border-gray-700"

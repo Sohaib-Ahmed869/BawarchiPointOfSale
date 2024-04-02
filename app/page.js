@@ -264,6 +264,7 @@ const MainScreen = () => {
                 </div>
               ) : (
                 <div
+                  key={index}
                   className="bg-black p-4 shadow-md rounded-md border border-gray-900 hover:bg-orange-500 cursor-pointer"
                   onClick={() => onCategoryChange(category.Name)}
                 >

@@ -148,7 +148,7 @@ const MainScreen = () => {
     // Constructing receipt content
     let receiptContent = "";
     receiptContent +=
-      "<div style='text-align:center; margin:auto; width: 100%; border: 2px solid #000; padding: 2px;height:100%'>";
+      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px;'>";
     receiptContent +=
       "<div style='margin-bottom: 10px;'><img src='logo.png' alt='Logo' style='width:100px;'></div>"; // Replace 'logo.png' with the path to your logo
     receiptContent +=
@@ -194,7 +194,7 @@ const MainScreen = () => {
     receiptContent += "</tbody></table>";
 
     receiptContent +=
-      "<div style='width: 100%;text-align:center;position:absolute;bottom:30'>";
+      "<div style='width: 100%;text-align:center;'>";
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=

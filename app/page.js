@@ -17,7 +17,15 @@ const MainScreen = () => {
   const [Status, setStatus] = useState("Pending");
   const [PaymentMethod, setPaymentMethod] = useState("Cash");
   const [PaymentDone, setPaymentDone] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  
+  useEffect(() => {
+    
+    
+      setGrandTotal(total - (total * discount / 100));
 
+    
+  }, [discount, total]);
   const onCategoryChange = (category) => {
     setSelectedCategory(category);
   };
@@ -313,7 +321,7 @@ const MainScreen = () => {
           <div className="absolute right-0 top-0 bg-black p-4 shadow-md rounded-md border border-gray-900 h-full w-1/4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 overflow-y-auto">
             <h2 className="text-2xl font-semibold">Cart</h2>
             <div className="bottom-0 bg-black p-4 mb-2 shadow-md rounded-md border border-gray-900">
-              <h2 className="text-xl font-semibold">Total: Rs {total}</h2>
+              <h2 className="text-xl font-semibold">Total: Rs {GrandTotal}</h2>
               <select
                 className="w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
                 onChange={(e) => setPaymentMethod(e.target.value)}
@@ -328,6 +336,19 @@ const MainScreen = () => {
                 placeholder="Customer Name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
+                className="mb-2 mt-2 w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
+              />
+              <label
+                htmlFor="discount"
+                className="block text-gray-300 text-sm font-semibold mb-2"
+              >
+                Discount
+              </label>
+              <input
+                type="text"
+                placeholder="Discount"
+                value={discount}
+                onChange={(e) => setDiscount(e.target.value)}
                 className="mb-2 mt-2 w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
               />
               <button

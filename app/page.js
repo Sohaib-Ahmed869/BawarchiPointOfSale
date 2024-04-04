@@ -148,7 +148,7 @@ const MainScreen = () => {
     // Constructing receipt content
     let receiptContent = "";
     receiptContent +=
-      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px;'>";
+      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px; max-height: 100px; overflow-y: auto;'>";
     receiptContent +=
       "<div style='margin-bottom: 10px;'><img src='logo.png' alt='Logo' style='width:100px;'></div>"; // Replace 'logo.png' with the path to your logo
     receiptContent +=
@@ -193,8 +193,7 @@ const MainScreen = () => {
     });
     receiptContent += "</tbody></table>";
 
-    receiptContent +=
-      "<div style='width: 100%;text-align:center;'>";
+    receiptContent += "<div style='width: 100%;text-align:center;'>";
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=
@@ -219,7 +218,7 @@ const MainScreen = () => {
 
     // Writing the receipt content to the new window
     printWindow.document.write(
-      "<div style='font-family: Arial, sans-serif;'>" +
+      "<div style='font-family: Arial, sans-serif; height: 100px;'>" +
         receiptContent +
         "</div>"
     );
@@ -238,19 +237,19 @@ const MainScreen = () => {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-7 gap-4 mt-8 md:w-3/4 right-0 bg-black p-4 shadow-md rounded-md border border-gray-900">
           {selectedCategory === "All" ? (
-          <div
-            className="bg-black p-4 shadow-md rounded-md border border-gray-900 bg-orange-500 cursor-pointer"
-            onClick={() => onCategoryChange("All")}
-          >
-            <h2 className="text-xl font-semibold">All</h2>
-          </div>
+            <div
+              className="bg-black p-4 shadow-md rounded-md border border-gray-900 bg-orange-500 cursor-pointer"
+              onClick={() => onCategoryChange("All")}
+            >
+              <h2 className="text-xl font-semibold">All</h2>
+            </div>
           ) : (
-          <div
-            className="bg-black p-4 shadow-md rounded-md border border-gray-900 hover:bg-orange-500 cursor-pointer"
-            onClick={() => onCategoryChange("All")}
-          >
-            <h2 className="text-xl font-semibold">All</h2>
-          </div>
+            <div
+              className="bg-black p-4 shadow-md rounded-md border border-gray-900 hover:bg-orange-500 cursor-pointer"
+              onClick={() => onCategoryChange("All")}
+            >
+              <h2 className="text-xl font-semibold">All</h2>
+            </div>
           )}
           {categories &&
             categories.map((category, index) =>
@@ -314,43 +313,42 @@ const MainScreen = () => {
           <div className="absolute right-0 top-0 bg-black p-4 shadow-md rounded-md border border-gray-900 h-full w-1/4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800 overflow-y-auto">
             <h2 className="text-2xl font-semibold">Cart</h2>
             <div className="bottom-0 bg-black p-4 mb-2 shadow-md rounded-md border border-gray-900">
-                <h2 className="text-xl font-semibold">Total: Rs {total}</h2>
-                <select
-                  className="w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                >
-                  <option value={""}>Select Option</option>
-                  <option value={"Cash"}>Cash</option>
-                  <option value={"Card"}>Card</option>
-                  <option value={"Cash on Delivery"}>Cash on Delivery</option>
-                </select>
-                <input
-                  type="text"
-                  placeholder="Customer Name"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="mb-2 mt-2 w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
-                />
-                <button
-                  className="bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-green-500"
-                  onClick={() => onCheckout()}
-                >
-                  Checkout
-                </button>
+              <h2 className="text-xl font-semibold">Total: Rs {total}</h2>
+              <select
+                className="w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <option value={""}>Select Option</option>
+                <option value={"Cash"}>Cash</option>
+                <option value={"Card"}>Card</option>
+                <option value={"Cash on Delivery"}>Cash on Delivery</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Customer Name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="mb-2 mt-2 w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500"
+              />
+              <button
+                className="bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-green-500"
+                onClick={() => onCheckout()}
+              >
+                Checkout
+              </button>
 
-                <button
-                  className="mt-2 bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-blue-500"
-                  onClick={() => printReceipt()}
-                >
-                  Print Receipt
-                </button>
-              </div>
+              <button
+                className="mt-2 bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-blue-500"
+                onClick={() => printReceipt()}
+              >
+                Print Receipt
+              </button>
+            </div>
             <div className="mt-4">
               {cartItems.map((item, index) => (
                 <div
                   key={index}
                   className="bg-black p-4 shadow-md rounded-md border border-gray-900"
-
                 >
                   <div className="flex justify-between items-center">
                     <img
@@ -392,7 +390,6 @@ const MainScreen = () => {
                   </div>
                 </div>
               ))}
-              
             </div>
           </div>
         )}

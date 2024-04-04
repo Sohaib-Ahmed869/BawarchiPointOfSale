@@ -231,7 +231,7 @@ const MainScreen = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen justify-between">
+    <div className="bg-black text-white flex flex-col min-h-screen justify-between">
       <Navbar />
 
       <div className="container mx-auto">

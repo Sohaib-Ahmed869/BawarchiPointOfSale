@@ -39,7 +39,7 @@ const Login = () => {
     }
 
     return (
-        <div className="flex min-h-screen flex-col justify-between">
+        <div className="bg-black text-white flex min-h-screen flex-col justify-between">
             <Navbar />
             <main className="container mx-auto px-4 py-8">
                 <div className="flex flex-col md:flex-row justify-center items-center gap-4">

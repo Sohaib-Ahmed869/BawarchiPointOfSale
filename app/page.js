@@ -218,7 +218,7 @@ const MainScreen = () => {
 
     // Writing the receipt content to the new window
     printWindow.document.write(
-      "<div style='font-family: Arial, sans-serif; height: 100px;'>" +
+      "<div style='font-family: Arial, sans-serif; height: 1400px;'>" +
         receiptContent +
         "</div>"
     );

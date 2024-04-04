@@ -148,7 +148,7 @@ const MainScreen = () => {
     // Constructing receipt content
     let receiptContent = "";
     receiptContent +=
-      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px; max-height: 100px; overflow-y: auto;'>";
+      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px; overflow-y: auto;'>";
     receiptContent +=
       "<div style='margin-bottom: 10px;'><img src='logo.png' alt='Logo' style='width:100px;'></div>"; // Replace 'logo.png' with the path to your logo
     receiptContent +=

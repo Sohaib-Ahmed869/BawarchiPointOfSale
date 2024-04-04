@@ -144,93 +144,25 @@ const MainScreen = () => {
     setTotal(total - product.Price * product.quantity);
   };
 
-  const printReceipt = () => {
-    // Constructing receipt content
-    let receiptContent = "";
-    receiptContent +=
-      "<div style='text-align:center; margin:auto; width: 100%;  padding: 2px;'>";
-    receiptContent +=
-      "<div style='margin-bottom: 10px;'><img src='logo.png' alt='Logo' style='width:100px;'></div>"; // Replace 'logo.png' with the path to your logo
-    receiptContent +=
-      "<div><strong>---------- Receipt ----------</strong></div>";
-    receiptContent +=
-      "<div style=' margin-top:30px, font-weight:bold'>Shop#01, Ground Floor, Phantom Mall, I-8 Markaz, Islamabad</div>";
-    receiptContent +=
-      "<div style=' margin-top:10px, font-weight:bold'>051 2719280</div>";
-    receiptContent +=
-      "<div style=' margin-top:10px, font-weight:bold'>NTN Number: C251459-8</div>";
-    receiptContent +=
-      "<div style=' margin-top:30px'>Customer: " + customerName + "</div>";
-    receiptContent +=
-      "<div style=' margin-top:30px'>Date: " +
-      new Date().toLocaleString() +
-      "</div>";
-    receiptContent +=
-      "<div style='border:2px black solid; width:100%; align-self:center;  margin-top:30px'></div>";
-    receiptContent +=
-      "<div style=' margin-top:30px'><strong>PAID</strong></div>";
-
-    // Table for displaying items
-    receiptContent += "<table style='width: 100%; border-collapse: collapse;'>";
-    receiptContent +=
-      "<thead><tr><th style='border: 1px solid #000; padding: 8px;'>Item</th><th style='border: 1px solid #000; padding: 8px;'>Quantity</th><th style='border: 1px solid #000; padding: 8px;'>Price</th></tr></thead>";
-    receiptContent += "<tbody>";
-    cartItems.forEach((item) => {
-      receiptContent += "<tr>";
-      receiptContent +=
-        "<td style='border: 1px solid #000; padding: 8px;'>" +
-        item.Name +
-        "</td>";
-      receiptContent +=
-        "<td style='border: 1px solid #000; padding: 8px;'>" +
-        item.quantity +
-        "</td>";
-      receiptContent +=
-        "<td style='border: 1px solid #000; padding: 8px;'>Rs." +
-        item.Price * item.quantity +
-        "</td>";
-      receiptContent += "</tr>";
-    });
-    receiptContent += "</tbody></table>";
-
-    receiptContent +=
-      "<div style='width: 100%;text-align:center;'>";
-    receiptContent +=
-      "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
-    receiptContent +=
-      "<div style='margin-top:10px'><strong>Total: PKR" +
-      total +
-      "</strong></div>";
-    receiptContent +=
-      "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
-    receiptContent +=
-      "<div style='margin-top:10px'><strong>Payment Method: " +
-      PaymentMethod +
-      "</strong></div>";
-    receiptContent +=
-      "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
-    receiptContent +=
-      "<div style='margin-top:10px'><strong>Thank you for your purchase!</strong></div>";
-    receiptContent += "</div>";
-    receiptContent += "</div>";
-
-    // Opening a new window to display the receipt content
-    const printWindow = window.open("", "_blank");
-
-    // Writing the receipt content to the new window
-    printWindow.document.write(
-      "<div style='font-family: Arial, sans-serif;'>" +
-        receiptContent +
-        "</div>"
-    );
-
-    // Closing the document for printing
-    printWindow.document.close();
-
-    // Triggering printing
-    printWindow.print();
-  };
-
+  const sendPrintRequest = () => {
+    let finalitems = []
+    fetch(`${BACKEND}/cashier/print`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ Items:cartItems }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      }
+      )
+      .catch((err) => {
+        console.log(err);
+      }
+      );
+  }
   return (
     <div className="flex flex-col min-h-screen justify-between">
       <Navbar />
@@ -340,7 +272,7 @@ const MainScreen = () => {
 
                 <button
                   className="mt-2 bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-blue-500"
-                  onClick={() => printReceipt()}
+                  onClick={() => sendPrintRequest()}
                 >
                   Print Receipt
                 </button>

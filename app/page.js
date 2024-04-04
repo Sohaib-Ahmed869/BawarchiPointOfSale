@@ -206,7 +206,7 @@ const MainScreen = () => {
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=
       "<div style='margin-top:10px'><strong>Total: PKR" +
-      total +
+      GrandTotal +
       "</strong></div>";
     receiptContent +=
       "<div style='margin-top:10px'><strong>Discount: " +

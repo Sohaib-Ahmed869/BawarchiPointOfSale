@@ -66,7 +66,7 @@ const MainScreen = () => {
     const order = {
       Customer_Name: customerName,
       Items: cartItems,
-      Total: total,
+      Total: GrandTotal,
       GST: GST,
       Grand_Total: GrandTotal,
       Status: Status,
@@ -208,6 +208,11 @@ const MainScreen = () => {
       "<div style='margin-top:10px'><strong>Total: PKR" +
       total +
       "</strong></div>";
+    receiptContent +=
+      "<div style='margin-top:10px'><strong>Discount: " +
+      discount +
+      "%</strong></div>";
+    
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=

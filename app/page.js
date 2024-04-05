@@ -176,7 +176,7 @@ const MainScreen = () => {
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;  margin-top:30px'></div>";
     receiptContent +=
-      "<div style=' margin-top:30px'><strong>PAID</strong></div>";
+      "<div style=' margin-top:30px'><strong>UNPAID</strong></div>";
 
     // Table for displaying items
     receiptContent += "<table style='width: 100%; border-collapse: collapse;'>";

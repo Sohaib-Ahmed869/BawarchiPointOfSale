@@ -52,7 +52,7 @@
           if (filterMonth) {
             filteredOrders = filteredOrders.filter((order) => {
               const orderMonth = new Date(order.Date).getMonth() + 1;
-              return orderMonth.toString() === filterMonth;
+              return orderMonth.toString() === filterMonth
             });
           }
 
@@ -60,7 +60,7 @@
           if (filterYear) {
             filteredOrders = filteredOrders.filter((order) => {
               const orderYear = new Date(order.Date).getFullYear();
-              return orderYear.toString() === filterYear;
+              return orderYear.toString() === filterYear
             });
           }
 

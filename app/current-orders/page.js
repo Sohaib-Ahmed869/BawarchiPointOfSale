@@ -2,12 +2,87 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../components/footer";
 import Navbar from "../components/navbar";
+import Modal from "react-bootstrap/Modal";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const CurrentOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [customerName, setCustomerName] = useState("");
+  const [cartItems, setCartItems] = useState([]);
+  const [GrandTotal, setGrandTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [PaymentMethod, setPaymentMethod] = useState("");
+  const [change, setChange] = useState(0);
+  const [amountPaid, setAmountPaid] = useState(0);
+  const [id, setId] = useState("");
+  const [products, setProducts] = useState([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [quantity, setQuantity] = useState(1); // default quantity as 1
+
+  const [itemPrice, setItemPrice] = useState(0); // default price as 0
+  const [show, setShow] = useState(false);
+
+  const [orderID, setOrderID] = useState("");
+
+  const handleShowModal = (id, GrandTotal) => {
+    setOrderID(id);
+    setGrandTotal(GrandTotal);
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleAddItem = () => {
+    if (selectedItem === "") {
+      alert("Please select an item");
+      return;
+    }
+    addItem(id, selectedItem, quantity, itemPrice);
+
+    //using backend find the existing grand total
+    fetch(`${BACKEND}/cashier/orderPrice/${orderID}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Data", data);
+        setGrandTotal(data);
+        console.log("Grand Total", GrandTotal);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+      
+
+    // update in backend
+    fetch(`${BACKEND}/cashier/orderPrice/${orderID}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ Grand_Total: GrandTotal, itemPrice: itemPrice }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      }
+      );
+
+    setQuantity(1);
+    setSelectedItem("");
+    setItemPrice(0);
+
+    handleCloseModal();
+  };
+
+  useEffect(() => {
+    setChange(amountPaid - GrandTotal);
+  }, [amountPaid, GrandTotal]);
   const getOrders = () => {
     fetch(`${BACKEND}/cashier/orders/`)
       .then((res) => res.json())
@@ -20,7 +95,96 @@ const CurrentOrders = () => {
       });
   };
 
-  const printReceipt = (cartItems, GrandTotal, discount, PaymentMethod, customerName) => {
+  const getProducts = () => {
+    fetch(`${BACKEND}/products/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+        console.log("Data", data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  const showOrderModal = (id, GrandTotal) => {
+    setOrderID(id);
+    console.log("Order ID", id);
+    handleShowModal(id, GrandTotal);
+  };
+
+  const addItem = (id, product_Name, qty, price) => {
+    console.log(id);
+    fetch(`${BACKEND}/cashier/order/additem/${orderID}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Name: product_Name,
+        quantity: qty,
+        Price: price,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        getOrders();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onChangeSelectedItem = (e) => {
+    //split the value to get the price
+    const [name, price] = e.target.value.split(" - Rs. ");
+    setSelectedItem(name);
+    setItemPrice(price);
+
+    console.log("Selected Item", name);
+    console.log("Price", price);
+  };
+
+  const handlePrint = () => {
+    if (amountPaid < GrandTotal) {
+      alert("Amount Paid is less than Grand Total");
+      return;
+    }
+    console.log("Printing Receipt");
+    console.log("Cart Items", cartItems);
+    console.log("Customer Name", customerName);
+    console.log("Grand Total", GrandTotal);
+    console.log("Discount", discount);
+    console.log("Payment Method", PaymentMethod);
+    console.log("Change", change);
+    console.log("Amount Paid", amountPaid);
+    console.log("ID", id);
+
+    printReceipt();
+    fetch(`${BACKEND}/cashier/order/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ Status: "Completed" }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        alert("Order Completed");
+        getOrders();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const printReceipt = () => {
     // Constructing receipt content
     let receiptContent = "";
     receiptContent +=
@@ -80,7 +244,7 @@ const CurrentOrders = () => {
       "<div style='margin-top:10px'><strong>Discount: " +
       discount +
       "%</strong></div>";
-    
+
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=
@@ -111,28 +275,43 @@ const CurrentOrders = () => {
     printWindow.print();
   };
 
-  const updateOrder = (id, status, customerName, cartItems, GrandTotal, discount, PaymentMethod) => {
-    fetch(`${BACKEND}/cashier/order/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ Status: status }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-
-        console.log(data);
-        getOrders();
+  const updateOrder = (
+    id,
+    status,
+    customerName,
+    cartItems,
+    GrandTotal,
+    discount,
+    PaymentMethod
+  ) => {
+    if (status !== "Completed") {
+      fetch(`${BACKEND}/cashier/order/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Status: status }),
       })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    if (status === "Completed") {
-      printReceipt(cartItems, GrandTotal, discount, PaymentMethod, customerName);
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          getOrders();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
+    if (status === "Completed") {
+      setCartItems(cartItems);
+      setCustomerName(customerName);
+      setGrandTotal(GrandTotal);
+      setDiscount(discount);
+      setPaymentMethod(PaymentMethod);
+      setId(id);
+
+      setShow(true);
+    }
   };
 
   useEffect(() => {
@@ -163,7 +342,6 @@ const CurrentOrders = () => {
               order.Status !== "Completed" &&
               order.Status !== "Cancelled" &&
               order.Status !== "Delivered" ? (
-                
                 <div
                   key={order._id}
                   className="bg-black bg-opacity-50 p-4 rounded-md shadow-md border border-gray-700"
@@ -177,20 +355,36 @@ const CurrentOrders = () => {
                     </p>
                     <p className="text-lg">Total: {order.Total}</p>
                   </div>
-                  <div className="flex items-left gap-2 text-white flex-col mt-4 text-left">
+                  <div className="flex items-left gap-2 text-white flex-col mt-4 text-left text-white">
                     <ul>
                       {order.Items.map((item, index) => (
                         <li key={index}>
-                          {item.Name} x {item.quantity}
+                          {item.Name} x {item.quantity} - Rs. {item.Price}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div className="flex gap-4 mt-4 justify-end border-t border-gray-700 pt-4">
+                    <button
+                      className="bg-orange-500 text-white p-2 rounded-md"
+                      onClick={() => showOrderModal(order._id, order.Grand_Total)}
+                    >
+                      Add Item
+                    </button>
                     <select
                       className="bg-black text-white p-2 rounded-md border border-gray-700"
                       value={order.Status}
-                      onChange={(e) => updateOrder(order._id, e.target.value, order.Customer_Name, order.Items, order.Total, order.Discount, order.PaymentMethod)}
+                      onChange={(e) =>
+                        updateOrder(
+                          order._id,
+                          e.target.value,
+                          order.Customer_Name,
+                          order.Items,
+                          order.Total,
+                          order.Discount,
+                          order.Payment_Method
+                        )
+                      }
                     >
                       <option value="Pending">Pending</option>
                       <option value="Completed">Completed</option>
@@ -211,6 +405,90 @@ const CurrentOrders = () => {
           </button>
         </div>
       </main>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        className="bg-gray-900 w-1/2 mx-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 "
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Enter Amount Paid</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-lg">Grand Total: {GrandTotal}</p>
+          <p className="text-lg">Change: {change}</p>
+          <br />
+          <input
+            type="number"
+            placeholder="Amount Paid"
+            className="w-full p-2 border border-gray-300 rounded-md text-black"
+            value={amountPaid}
+            onChange={(e) => setAmountPaid(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer className="flex justify-between mt-5">
+          <button
+            className="bg-gray-700 text-white px-4 py-2 rounded-md"
+            onClick={() => setShow(false)}
+          >
+            Close
+          </button>
+          <button
+            className="bg-orange-500 text-white px-4 py-2 rounded-md"
+            onClick={() => {
+              setShow(false);
+              handlePrint();
+            }}
+          >
+            Submit
+          </button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        centered
+        className="bg-gray-900 w-1/2 mx-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Add Item to Order</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <select
+            value={`${selectedItem} - Rs. ${itemPrice}`}
+            onChange={(e) => onChangeSelectedItem(e)}
+            className="bg-black text-white p-2 rounded-md border border-gray-700"
+          >
+            <option value="">Select Item</option>
+            {/* Map through your items array to render options */}
+            {products.map((item) => (
+              <option key={item.id} value={`${item.Name} - Rs. ${item.Price}`}>
+                {item.Name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="number"
+            placeholder="Quantity"
+            className="w-full p-2 border border-gray-300 rounded-md text-black mt-2"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer className="flex justify-between mt-5">
+          <button onClick={handleCloseModal}>Cancel</button>
+          <button
+          className="bg-orange-500 text-white px-4 py-2 rounded-md"
+            onClick={() =>
+              handleAddItem(orderID, selectedItem, quantity, selectedItem.Price)
+            }
+          >
+            Add Item
+          </button>
+        </Modal.Footer>
+      </Modal>
+
       <Footer />
     </div>
   );

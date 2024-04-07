@@ -18,13 +18,10 @@ const MainScreen = () => {
   const [PaymentMethod, setPaymentMethod] = useState("Cash");
   const [PaymentDone, setPaymentDone] = useState(false);
   const [discount, setDiscount] = useState(0);
-  
-  useEffect(() => {
-    
-    
-      setGrandTotal(total - (total * discount / 100));
 
-    
+  useEffect(() => {
+    setGrandTotal(total - (total * discount) / 100);
+    console.log(discount);
   }, [discount, total]);
   const onCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -62,6 +59,11 @@ const MainScreen = () => {
     getCatergories();
   }, []);
 
+  const checkoutPress = () => {
+    onCheckout();
+    printReceipt();
+  };
+
   const onCheckout = () => {
     const order = {
       Customer_Name: customerName,
@@ -70,11 +72,14 @@ const MainScreen = () => {
       GST: GST,
       Grand_Total: GrandTotal,
       Status: Status,
+      Discount: discount,
       Payment_Method: PaymentMethod,
       Payment_Done: PaymentDone,
       Date: new Date().toISOString(),
       Refunded_Items: [],
     };
+    console.log(order.Customer_Name);
+    console.log(order.Discount);
 
     fetch(`${BACKEND}/cashier/order`, {
       method: "POST",
@@ -97,6 +102,7 @@ const MainScreen = () => {
         setStatus("Pending");
         setPaymentMethod("Cash");
         setPaymentDone(false);
+        setDiscount(0);
       })
       .catch((err) => {
         alert("Error Placing Order! Please try again.");
@@ -176,7 +182,7 @@ const MainScreen = () => {
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;  margin-top:30px'></div>";
     receiptContent +=
-      "<div style=' margin-top:30px'><strong>UNPAID</strong></div>";
+      "<div style=' margin-top:30px'><strong>KITCHEN RECIEPT</strong></div>";
 
     // Table for displaying items
     receiptContent += "<table style='width: 100%; border-collapse: collapse;'>";
@@ -212,7 +218,7 @@ const MainScreen = () => {
       "<div style='margin-top:10px'><strong>Discount: " +
       discount +
       "%</strong></div>";
-    
+
     receiptContent +=
       "<div style='border:2px black solid; width:100%; align-self:center;margin-top:10px;'></div>";
     receiptContent +=
@@ -358,16 +364,9 @@ const MainScreen = () => {
               />
               <button
                 className="bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-green-500"
-                onClick={() => onCheckout()}
+                onClick={() => checkoutPress()}
               >
                 Checkout
-              </button>
-
-              <button
-                className="mt-2 bg-gray-500 text-white px-2 py-1 rounded-md w-full hover:bg-blue-500"
-                onClick={() => printReceipt()}
-              >
-                Print Receipt
               </button>
             </div>
             <div className="mt-4">

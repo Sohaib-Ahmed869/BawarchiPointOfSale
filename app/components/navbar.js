@@ -14,8 +14,12 @@ const Navbar = () => {
     }
     if (!token) {
       setIsLogged(false);
+      console.log("Not Logged In");
     }
   }, [token, isLogged]);
+
+
+
 
   const onLogout = () => {
     localStorage.removeItem("token");

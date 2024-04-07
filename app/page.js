@@ -6,6 +6,14 @@ import Footer from "./components/footer";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const MainScreen = () => {
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+    if (!token) {
+      window.location.href = "/home";
+    }
+  }
+  , [token]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");

@@ -31,7 +31,7 @@ const CurrentOrders = () => {
     setOrderID(id);
     setGrandTotal(GrandTotal);
     setShowModal(true);
-  }
+  };
 
   const handleCloseModal = () => setShowModal(false);
 
@@ -54,15 +54,13 @@ const CurrentOrders = () => {
         console.log(err);
       });
 
-      
-
     // update in backend
     fetch(`${BACKEND}/cashier/orderPrice/${orderID}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ Grand_Total: GrandTotal, itemPrice: itemPrice }),
+      body: JSON.stringify({ Grand_Total: GrandTotal, itemPrice: itemPrice, quantity: quantity}),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -70,8 +68,7 @@ const CurrentOrders = () => {
       })
       .catch((err) => {
         console.log(err);
-      }
-      );
+      });
 
     setQuantity(1);
     setSelectedItem("");
@@ -275,6 +272,16 @@ const CurrentOrders = () => {
     printWindow.print();
   };
 
+  const getDate = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString();
+  };
+
+  const getTime = (date) => {
+    const d = new Date(date);
+    return d.toLocaleTimeString();
+  };
+
   const updateOrder = (
     id,
     status,
@@ -353,6 +360,9 @@ const CurrentOrders = () => {
                     <p className="text-lg">
                       Customer Name: {order.Customer_Name}
                     </p>
+                    <p className="text-sm">
+                      Created At: {getTime(order.Date)} {getDate(order.Date)}
+                    </p>
                     <p className="text-lg">Total: {order.Total}</p>
                   </div>
                   <div className="flex items-left gap-2 text-white flex-col mt-4 text-left text-white">
@@ -367,7 +377,9 @@ const CurrentOrders = () => {
                   <div className="flex gap-4 mt-4 justify-end border-t border-gray-700 pt-4">
                     <button
                       className="bg-orange-500 text-white p-2 rounded-md"
-                      onClick={() => showOrderModal(order._id, order.Grand_Total)}
+                      onClick={() =>
+                        showOrderModal(order._id, order.Grand_Total)
+                      }
                     >
                       Add Item
                     </button>
@@ -479,7 +491,7 @@ const CurrentOrders = () => {
         <Modal.Footer className="flex justify-between mt-5">
           <button onClick={handleCloseModal}>Cancel</button>
           <button
-          className="bg-orange-500 text-white px-4 py-2 rounded-md"
+            className="bg-orange-500 text-white px-4 py-2 rounded-md"
             onClick={() =>
               handleAddItem(orderID, selectedItem, quantity, selectedItem.Price)
             }

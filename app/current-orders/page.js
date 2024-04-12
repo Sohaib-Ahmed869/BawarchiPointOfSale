@@ -46,9 +46,7 @@ const CurrentOrders = () => {
     fetch(`${BACKEND}/cashier/orderPrice/${orderID}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Data", data);
         setGrandTotal(data);
-        console.log("Grand Total", GrandTotal);
       })
       .catch((err) => {
         console.log(err);
@@ -68,7 +66,6 @@ const CurrentOrders = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
       })
       .catch((err) => {
         console.log(err);
@@ -89,7 +86,6 @@ const CurrentOrders = () => {
       .then((res) => res.json())
       .then((data) => {
         setOrders(data);
-        console.log("Data", data);
       })
       .catch((err) => {
         console.log(err);
@@ -101,7 +97,6 @@ const CurrentOrders = () => {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        console.log("Data", data);
       })
       .catch((err) => {
         console.log(err);
@@ -114,12 +109,10 @@ const CurrentOrders = () => {
 
   const showOrderModal = (id, GrandTotal) => {
     setOrderID(id);
-    console.log("Order ID", id);
     handleShowModal(id, GrandTotal);
   };
 
   const addItem = (id, product_Name, qty, price) => {
-    console.log(id);
     fetch(`${BACKEND}/cashier/order/additem/${orderID}`, {
       method: "PATCH",
       headers: {
@@ -133,7 +126,6 @@ const CurrentOrders = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         getOrders();
       })
       .catch((err) => {
@@ -146,9 +138,6 @@ const CurrentOrders = () => {
     const [name, price] = e.target.value.split(" - Rs. ");
     setSelectedItem(name);
     setItemPrice(price);
-
-    console.log("Selected Item", name);
-    console.log("Price", price);
   };
 
   const handlePrint = () => {
@@ -156,15 +145,6 @@ const CurrentOrders = () => {
       alert("Amount Paid is less than Grand Total");
       return;
     }
-    console.log("Printing Receipt");
-    console.log("Cart Items", cartItems);
-    console.log("Customer Name", customerName);
-    console.log("Grand Total", GrandTotal);
-    console.log("Discount", discount);
-    console.log("Payment Method", PaymentMethod);
-    console.log("Change", change);
-    console.log("Amount Paid", amountPaid);
-    console.log("ID", id);
 
     printReceipt();
     fetch(`${BACKEND}/cashier/order/${id}`, {
@@ -176,7 +156,6 @@ const CurrentOrders = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         alert("Order Completed");
         getOrders();
       })
@@ -396,7 +375,6 @@ const CurrentOrders = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           getOrders();
         })
         .catch((err) => {
@@ -415,6 +393,26 @@ const CurrentOrders = () => {
       setShow(true);
     }
   };
+
+
+  const updateOrderPaymentMethod = (id, paymentMethod) => {
+    fetch(`${BACKEND}/cashier/orderPaymentMethod/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ Payment_Method: paymentMethod }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert ("Payment Method Updated to " + paymentMethod + " for Order");
+        getOrders();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
 
   useEffect(() => {
     getOrders();
@@ -470,7 +468,8 @@ const CurrentOrders = () => {
                     </ul>
                   </div>
                   <div className="flex gap-4 mt-4 justify-between border-t border-gray-700 pt-4">
-                    <p
+                    <select
+                      value={order.Payment_Method}
                       className="text-white p-2 rounded-md border border-gray-700"
                       style={{
                         backgroundColor:
@@ -480,9 +479,21 @@ const CurrentOrders = () => {
                             ? "blue"
                             : "orange",
                       }}
+                      onChange={(e) =>
+                        updateOrderPaymentMethod(order._id, e.target.value)
+                      }
+
                     >
-                      {order.Payment_Method}
-                    </p>
+                      <option value={order.Payment_Method}>
+                        {order.Payment_Method}
+                      </option>
+                      <option value="Cash">
+                        Cash
+                      </option>
+                      <option value="Card">
+                        Card
+                      </option>
+                    </select>
                     <div>
                       <button 
                         className="bg-orange-500 text-white p-2 rounded-md mr-10"
@@ -584,7 +595,7 @@ const CurrentOrders = () => {
             <option value="">Select Item</option>
             {/* Map through your items array to render options */}
             {products.map((item) => (
-              <option key={item.id} value={`${item.Name} - Rs. ${item.Price}`}>
+              <option key={item._id} value={`${item.Name} - Rs. ${item.Price}`}>
                 {item.Name}
               </option>
             ))}

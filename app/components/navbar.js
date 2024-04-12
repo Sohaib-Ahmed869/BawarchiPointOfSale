@@ -10,7 +10,6 @@ const Navbar = () => {
     if (token) {
       setIsLogged(true);
       console.log("Logged In");
-      console.log(token);
     }
     if (!token) {
       setIsLogged(false);

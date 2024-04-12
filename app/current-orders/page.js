@@ -60,7 +60,11 @@ const CurrentOrders = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ Grand_Total: GrandTotal, itemPrice: itemPrice, quantity: quantity}),
+      body: JSON.stringify({
+        Grand_Total: GrandTotal,
+        itemPrice: itemPrice,
+        quantity: quantity,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -374,35 +378,40 @@ const CurrentOrders = () => {
                       ))}
                     </ul>
                   </div>
-                  <div className="flex gap-4 mt-4 justify-end border-t border-gray-700 pt-4">
-                    <button
-                      className="bg-orange-500 text-white p-2 rounded-md"
-                      onClick={() =>
-                        showOrderModal(order._id, order.Grand_Total)
-                      }
-                    >
-                      Add Item
-                    </button>
-                    <select
-                      className="bg-black text-white p-2 rounded-md border border-gray-700"
-                      value={order.Status}
-                      onChange={(e) =>
-                        updateOrder(
-                          order._id,
-                          e.target.value,
-                          order.Customer_Name,
-                          order.Items,
-                          order.Total,
-                          order.Discount,
-                          order.Payment_Method
-                        )
-                      }
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Completed">Completed</option>
-                      {/* <option value="Cancelled">Cancelled</option>
+                  <div className="flex gap-4 mt-4 justify-between border-t border-gray-700 pt-4">
+                    <p className="text-white p-2 rounded-md border border-gray-700" style={{backgroundColor: order.Payment_Method === "Cash" ? "green" : order.Payment_Method === "Card" ? "blue" : "orange"}}>
+                      {order.Payment_Method}
+                    </p>
+                    <div>
+                      <button
+                        className="bg-orange-500 text-white p-2 rounded-md mr-10"
+                        onClick={() =>
+                          showOrderModal(order._id, order.Grand_Total)
+                        }
+                      >
+                        Add Item
+                      </button>
+                      <select
+                        className="bg-black text-white p-2 rounded-md border border-gray-700"
+                        value={order.Status}
+                        onChange={(e) =>
+                          updateOrder(
+                            order._id,
+                            e.target.value,
+                            order.Customer_Name,
+                            order.Items,
+                            order.Total,
+                            order.Discount,
+                            order.Payment_Method
+                          )
+                        }
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        {/* <option value="Cancelled">Cancelled</option>
                       <option value="Delivered">Delivered</option> */}
-                    </select>
+                      </select>
+                    </div>
                   </div>
                 </div>
               ) : null

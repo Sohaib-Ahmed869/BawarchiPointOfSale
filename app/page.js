@@ -340,7 +340,8 @@ const MainScreen = () => {
                 <option value={""}>Select Option</option>
                 <option value={"Cash"}>Cash</option>
                 <option value={"Card"}>Card</option>
-                <option value={"Cash on Delivery"}>Cash on Delivery</option>
+                <option value={"Foodpanda"}>FoodPanda</option>
+                <option value={"TakeAway"}>Take Away</option>
               </select>
               <input
                 type="text"
@@ -353,7 +354,7 @@ const MainScreen = () => {
                 htmlFor="discount"
                 className="block text-gray-300 text-sm font-semibold mb-2"
               >
-                Discount
+                Discount (Percentage %)
               </label>
               <input
                 type="text"

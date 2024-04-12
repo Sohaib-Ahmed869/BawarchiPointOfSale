@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 
@@ -18,6 +18,16 @@ const MainScreen = () => {
   const [PaymentMethod, setPaymentMethod] = useState("Cash");
   const [PaymentDone, setPaymentDone] = useState(false);
   const [discount, setDiscount] = useState(0);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((product) =>
+        product.Name.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, products]);
 
   useEffect(() => {
     setGrandTotal(total - (total * discount) / 100);
@@ -32,7 +42,7 @@ const MainScreen = () => {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products);
-        console.log("Data", data.products);
+        setFilteredProducts(data.products);
       })
       .catch((err) => {
         console.log(err);
@@ -48,7 +58,6 @@ const MainScreen = () => {
       .then((res) => res.json())
       .then((data) => {
         setCategories(data);
-        console.log("Data", data);
       })
       .catch((err) => {
         console.log(err);
@@ -91,7 +100,6 @@ const MainScreen = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.status == "200") {
-          console.log(data);
           alert("Order Placed Successfully!");
         }
         setCartItems([]);
@@ -291,9 +299,18 @@ const MainScreen = () => {
               )
             )}
         </div>
+        <div className="bg-black p-4 shadow-md rounded-md border border-gray-900 mt-8 md:w-3/4">
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-3 py-2 bg-gray-800 text-gray-300 rounded-md border border-gray-700 focus:outline-none focus:border-orange-500 text-white"
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 md:w-3/4">
-          {products.map((product, index) =>
+          {filteredProducts.map((product, index) =>
             selectedCategory === "All" ||
             product.Category === selectedCategory ? (
               <div

@@ -547,13 +547,13 @@ const CurrentOrders = () => {
           <Modal.Title>Enter Amount Paid</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="text-lg">Grand Total: {GrandTotal}</p>
-          <p className="text-lg">Change: {change}</p>
+          <p className="text-lg text-white">Grand Total: {GrandTotal}</p>
+          <p className="text-lg text-white">Change: {change}</p>
           <br />
           <input
             type="number"
             placeholder="Amount Paid"
-            className="w-full p-2 border border-gray-300 rounded-md text-black"
+            className="w-full p-2 border border-gray-300 rounded-md text-black text-white"
             value={amountPaid}
             onChange={(e) => setAmountPaid(e.target.value)}
           />
